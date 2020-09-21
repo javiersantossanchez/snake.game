@@ -41,7 +41,7 @@ func listenKeyBoard(eventMove chan game.Move, eventCommand chan command) {
 				eventCommand <- start
 			default:
 				switch ev.Ch {
-				case 'Y':
+				case 'y':
 					eventCommand <- start
 				default:
 					eventCommand <- finish

@@ -109,8 +109,6 @@ func main() {
 		events := <-commandEvent
 		if events == start {
 			finishsw = false
-		} else {
-			finishsw = true
 		}
 		termbox.Clear(coldef, coldef)
 	}
