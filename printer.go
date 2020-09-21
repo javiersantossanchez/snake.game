@@ -10,7 +10,7 @@ var (
 	lastSnake []game.Cell
 )
 
-func pr(s game.Snake) {
+func printSnake(s game.Snake) {
 	if lastSnake != nil {
 		for _, body := range lastSnake {
 			termbox.SetCell(body.Column, body.Row, ' ', termbox.ColorDefault, termbox.ColorDefault)
@@ -22,5 +22,14 @@ func pr(s game.Snake) {
 
 	}
 	lastSnake = s.GetBody()
+	termbox.Flush()
+}
+
+func printMessage(x, y int, msg string) {
+	for _, c := range msg {
+		termbox.SetCell(x, 1, c, termbox.ColorGreen, termbox.ColorDefault)
+		x++
+	}
+
 	termbox.Flush()
 }

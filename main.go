@@ -11,6 +11,7 @@ type command int
 
 const (
 	finish command = 1 + iota
+	pause
 	stop
 )
 
@@ -37,49 +38,67 @@ func main() {
 
 	var eve, commandEvent = initKeyBard()
 	snake := game.NewSnake()
-	pr(*snake)
+	printSnake(*snake)
 	var food game.Cell
 	food = game.GenerateFod(snake.GetBody(), w, h)
 	termbox.SetCell(food.Column, food.Row, ' ', termbox.ColorCyan, termbox.ColorCyan)
 
+	var pauseSw = false
 	for running := true; running; {
 		select {
 		case e := <-eve:
-			switch e {
-			case game.Left:
-				snake.TurnToLeft()
-			case game.Down:
-				snake.TurnToDown()
-			case game.Right:
-				snake.TurnToRight()
-			case game.Up:
-				snake.TurnToUp()
+			if !pauseSw {
+				switch e {
+				case game.Left:
+					snake.TurnToLeft()
+				case game.Down:
+					snake.TurnToDown()
+				case game.Right:
+					snake.TurnToRight()
+				case game.Up:
+					snake.TurnToUp()
+				}
 			}
 
-		case <-commandEvent:
-			running = false
+		case event := <-commandEvent:
+			switch event {
+			case pause:
+				pauseSw = !pauseSw
+			case finish:
+				running = false
+			}
+
 		default:
 
 		}
-		snake.MovingForward()
-		if crash(*snake) {
-			running = false
-		} else {
-			if snake.OutRange(w, h) {
+		if !pauseSw {
+			snake.MovingForward()
+			if crash(*snake) {
 				running = false
-				break
 			} else {
+				if snake.OutRange(w, h) {
+					running = false
+					break
+				} else {
 
-				if snake.GetHead() == food {
-					snake.GrowUp()
-					food = game.GenerateFod(snake.GetBody(), w, h)
-					termbox.SetCell(food.Column, food.Row, ' ', termbox.ColorCyan, termbox.ColorCyan)
+					if snake.GetHead() == food {
+						snake.GrowUp()
+						food = game.GenerateFod(snake.GetBody(), w, h)
+						termbox.SetCell(food.Column, food.Row, ' ', termbox.ColorCyan, termbox.ColorCyan)
+					}
+					printSnake(*snake)
 				}
-				pr(*snake)
-			}
-			time.Sleep(80 * time.Millisecond)
+				time.Sleep(80 * time.Millisecond)
 
+			}
 		}
 	}
+
+	const coldef = termbox.ColorDefault
+	termbox.Clear(coldef, coldef)
+	termbox.Flush()
+	printMessage(1, 1, "Game Over")
+
+	time.Sleep(2 * time.Second)
 
 }

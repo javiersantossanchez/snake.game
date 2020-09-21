@@ -35,6 +35,8 @@ func listenKeyBoard(eventMove chan game.Move, eventCommand chan command) {
 				eventMove <- game.Up
 			case termbox.KeyEsc:
 				eventCommand <- finish
+			case termbox.KeySpace:
+				eventCommand <- pause
 			}
 		case termbox.EventError:
 			os.Exit(3)
