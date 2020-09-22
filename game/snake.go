@@ -28,7 +28,7 @@ func (s *Snake) OutRange(w int, h int) bool {
 
 	if s.GetHead().Column < 0 || s.GetHead().Row < 0 {
 		isOutRange = true
-	} else if s.GetHead().Column > w || s.GetHead().Row > h {
+	} else if s.GetHead().Column >= w || s.GetHead().Row >= h {
 		isOutRange = true
 	}
 	return isOutRange

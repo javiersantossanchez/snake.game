@@ -36,15 +36,22 @@ func main() {
 		w, h = termbox.Size()
 	)
 
+	boardWidth := w - 2
+	boardHeight := h - 3
+
 	var eve, commandEvent = initKeyBard()
 
 	var finishsw = false
 	for !finishsw {
+		printWalls(boardWidth, boardHeight)
+		game.StartScore()
+		printScore(game.GetCurentScore())
+
 		snake := game.NewSnake()
 		printSnake(*snake)
 		var food game.Cell
-		food = game.GenerateFod(snake.GetBody(), w, h)
-		termbox.SetCell(food.Column, food.Row, ' ', termbox.ColorCyan, termbox.ColorCyan)
+		food = game.GenerateFod(snake.GetBody(), boardWidth, boardHeight)
+		printFood(food)
 
 		var pauseSw = false
 		for running := true; running; {
@@ -80,15 +87,17 @@ func main() {
 				if crash(*snake) {
 					running = false
 				} else {
-					if snake.OutRange(w, h) {
+					if snake.OutRange(boardWidth, boardHeight) {
 						running = false
 						break
 					} else {
 
 						if snake.GetHead() == food {
 							snake.GrowUp()
-							food = game.GenerateFod(snake.GetBody(), w, h)
-							termbox.SetCell(food.Column, food.Row, ' ', termbox.ColorCyan, termbox.ColorCyan)
+							game.IncreaseScore()
+							printScore(game.GetCurentScore())
+							food = game.GenerateFod(snake.GetBody(), boardWidth, boardHeight)
+							printFood(food)
 						}
 						printSnake(*snake)
 					}
@@ -108,8 +117,13 @@ func main() {
 		finishsw = true
 		events := <-commandEvent
 		if events == start {
+			//printMessage(5, 3, "ccc")
 			finishsw = false
+		} else {
+			//printMessage(5, 3, "ffffff")
+			finishsw = true
 		}
+		//time.Sleep(800 * time.Millisecond)
 		termbox.Clear(coldef, coldef)
 	}
 
