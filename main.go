@@ -46,6 +46,7 @@ func main() {
 		printWalls(boardWidth, boardHeight)
 		game.StartScore()
 		printScore(game.GetCurentScore())
+		printInstructions()
 
 		snake := game.NewSnake()
 		printSnake(*snake)
