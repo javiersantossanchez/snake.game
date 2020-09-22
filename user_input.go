@@ -24,6 +24,7 @@ func listenKeyBoard(eventMove chan game.Move, eventCommand chan command) {
 		ev := termbox.PollEvent()
 		switch ev.Type {
 		case termbox.EventKey:
+
 			switch ev.Key {
 			case termbox.KeyArrowLeft:
 				eventMove <- game.Left

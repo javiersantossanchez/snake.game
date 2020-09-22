@@ -115,14 +115,21 @@ func main() {
 		printMessage(10, 10, "Do you want play again? Y/N")
 
 		finishsw = true
-		events := <-commandEvent
-		if events == start {
-			//printMessage(5, 3, "ccc")
-			finishsw = false
-		} else {
-			//printMessage(5, 3, "ffffff")
-			finishsw = true
+		select {
+		case events := <-commandEvent:
+			switch events {
+			case start:
+				finishsw = false
+			default:
+				finishsw = true
+			}
+		case e := <-eve:
+			switch e {
+			default:
+				finishsw = true
+			}
 		}
+
 		//time.Sleep(800 * time.Millisecond)
 		termbox.Clear(coldef, coldef)
 	}
